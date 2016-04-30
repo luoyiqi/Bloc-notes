@@ -1,10 +1,14 @@
 package org.oucho.bloc_notes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
@@ -38,7 +42,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements
-        ConfirmationDialogListener, OnGestureListener {
+        ConfirmationDialogListener,
+        OnGestureListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private NoteManager noteManager = null;
 
@@ -49,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements
     private final int DIALOG_DELETE = 1;
     private final int NOTE_EDIT = 2;
 
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +65,14 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        mNavigationView.setNavigationItemSelectedListener(this);
+
 
         application = (NotepadApplication) this.getApplication();
         noteManager = application.getNoteManager();
@@ -106,6 +123,43 @@ public class MainActivity extends AppCompatActivity implements
                 .showEvery(1)
                 .start();
     }
+
+        /* *********************************************************************************************
+     * Navigation Drawer
+     * ********************************************************************************************/
+
+    public DrawerLayout getDrawerLayout() {
+        return mDrawerLayout;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        mDrawerLayout.closeDrawers();
+        switch (menuItem.getItemId()) {
+
+            case R.id.nav_update:
+                updateOnStart();
+                break;
+
+            case R.id.nav_help:
+                about();
+                break;
+
+            case R.id.nav_exit:
+                exit();
+                break;
+
+            default: //do nothing
+                break;
+        }
+        return true;
+    }
+
+    private void exit() {
+
+        finish();
+    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -524,5 +578,33 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onSingleTapUp(MotionEvent e)
     {
         return false;
+    }
+
+
+
+    /***********************************************************************************************
+     * About dialog
+     **********************************************************************************************/
+
+    private void about() {
+
+        String title = getString(R.string.about);
+        AlertDialog.Builder about = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        @SuppressLint("InflateParams")
+        View dialoglayout = inflater.inflate(R.layout.alertdialog_main_noshadow, null);
+        Toolbar toolbar = (Toolbar) dialoglayout.findViewById(R.id.dialog_toolbar_noshadow);
+        toolbar.setTitle(title);
+        toolbar.setTitleTextColor(0xffffffff);
+
+        final TextView text = (TextView) dialoglayout.findViewById(R.id.showrules_dialog);
+        text.setText(getString(R.string.about_message));
+
+        about.setView(dialoglayout);
+
+        AlertDialog dialog = about.create();
+        dialog.show();
     }
 }

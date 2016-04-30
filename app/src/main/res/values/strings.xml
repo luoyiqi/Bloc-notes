@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Bloc-notes</string>
 
+    <!-- nav header activity main -->
+    <string name="version">Bloc-notes 1.0</string>
+    <string name="by">Old Geek, avril 2016</string>
+
     <string name="titleEditNote">Editer note</string>
     <string name="newNote">Créer note</string>
     <string name="saveNote">Sauvegarder</string>
@@ -30,6 +34,23 @@
     <string name="toastNoteDuplicated">Note duplicated</string>
 
 
+    <string name="exit">Quitter</string>
+
+
+    <string name="update">Mise à jour</string>
     <string name="update_available">Mise à jour %1$s disponible.</string>
     <string name="appupdater_btn_update">Télécharger</string>
+
+    <string name="about">A propos</string>
+
+    <string name="about_message">
+        \n
+        Bloc-notes pour android.\n
+        \n
+        Old Geek, 2016\n
+        \n
+        Licence: aucune.\n
+        \n
+    </string>
+
 </resources>

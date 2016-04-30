@@ -30,7 +30,7 @@
                 android:ellipsize="end"
                 android:maxLines="@integer/max_tile_lines"
                 android:singleLine="false"
-                android:text="bla bla"
+                android:text="bla bla bla"
                 android:textColor="@color/tile_text" />
 
             <LinearLayout
