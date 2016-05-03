@@ -1,9 +1,9 @@
-package org.oucho.bloc_notes.update;
+package org.oucho.bloc_notes.update.objects;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-class Version implements Comparable<Version> {
+public class Version implements Comparable<Version> {
     private final String version;
 
     private String get() {
@@ -39,7 +39,11 @@ class Version implements Comparable<Version> {
 
     @Override
     public boolean equals(Object that) {
-        return this == that || that != null && this.getClass() == that.getClass() && this.compareTo((Version) that) == 0;
+        if (this == that)
+            return true;
+        if (that == null)
+            return false;
+        return this.getClass() == that.getClass() && this.compareTo((Version) that) == 0;
     }
 
 }

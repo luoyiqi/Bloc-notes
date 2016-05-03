@@ -5,16 +5,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-class Preferences {
+class LibraryPreferences {
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
 
+    private static final String KeyAppUpdaterShow = "prefAppUpdaterShow";
     private static final String KeySuccessfulChecks = "prefSuccessfulChecks";
 
     @SuppressLint("CommitPrefEdits")
-    public Preferences(Context context) {
+    public LibraryPreferences(Context context) {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.editor = sharedPreferences.edit();
+    }
+
+    public Boolean getAppUpdaterShow() {
+        return sharedPreferences.getBoolean(KeyAppUpdaterShow, true);
+    }
+
+    public void setAppUpdaterShow(Boolean res) {
+        editor.putBoolean(KeyAppUpdaterShow, res);
+        editor.commit();
     }
 
     public Integer getSuccessfulChecks() {

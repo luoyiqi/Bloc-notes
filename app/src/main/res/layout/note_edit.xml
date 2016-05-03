@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_view"
+    style="@style/CardView.Light"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background"
-    android:fillViewport="true" >
+    android:layout_margin="3dp"
+    card_view:cardCornerRadius="0dp"
+    card_view:elevation="1dp">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:padding="4dp" >
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:background="@color/selected" >
 
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/timetable_item_border"
-            android:ems="10"
-            android:gravity="top"
-            android:inputType="textCapSentences|textMultiLine|textLongMessage" >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp">
 
-            <requestFocus />
-        </EditText>
-    </LinearLayout>
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top"
+                android:inputType="textCapSentences|textMultiLine|textLongMessage" >
 
-</ScrollView>
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+
+    </ScrollView>
+</android.support.v7.widget.CardView>
