@@ -1,6 +1,7 @@
 package org.oucho.bloc_notes;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -34,12 +35,19 @@ public class NoteEditActivity extends AppCompatActivity
         Context context = getApplicationContext();
 
         int couleurTitre = ContextCompat.getColor(context, R.color.colorAccent);
+        int couleurActionBar = ContextCompat.getColor(context, R.color.selected);
+
 
         String titre = context.getString(R.string.app_edit);
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(Html.fromHtml("<font color='" + couleurTitre + "'>" + titre + "</font>"));
+
+        ColorDrawable colorDrawable = new ColorDrawable(couleurActionBar);
+
+        actionBar.setBackgroundDrawable(colorDrawable);
+        actionBar.setElevation(0);
 
         NotepadApplication application = (NotepadApplication) this.getApplication();
         noteManager = application.getNoteManager();

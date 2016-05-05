@@ -147,12 +147,10 @@ public class Note {
     public void share(Context context) {
         Intent share = new Intent(android.content.Intent.ACTION_SEND);
         share.setType("text/plain");
-        share.putExtra(android.content.Intent.EXTRA_TITLE,
-                context.getString(R.string.shareEntityName));
+        share.putExtra(android.content.Intent.EXTRA_TITLE, context.getString(R.string.shareEntityName));
         share.putExtra(android.content.Intent.EXTRA_TEXT, text);
         share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(Intent.createChooser(share,
-                context.getString(R.string.sharePromptText)));
+        context.startActivity(Intent.createChooser(share, context.getString(R.string.sharePromptText)));
     }
 
     public void saveToFile(Context context) throws IOException {

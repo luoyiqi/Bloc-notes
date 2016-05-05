@@ -4,27 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="0dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="org.oucho.bloc_notes.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <ScrollView
         android:id="@+id/scroll_tile_container"
-        android:padding="0dp"
-        android:layout_margin="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true">
 
-        <LinearLayout
+        <GridLayout
             android:id="@+id/tile_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:columnCount="2">
+        </GridLayout>
 
     </ScrollView>
+
 
     <TextView
         android:id="@+id/emptyNotifier"

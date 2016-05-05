@@ -10,15 +10,18 @@
     <item
         android:id="@+id/contextDelete"
         android:title="@string/contextDelete"
-        android:orderInCategory="2"
-        android:icon="@drawable/content_discard">
+        android:orderInCategory="2">
 
     </item>
     <item
         android:id="@+id/contextDuplicate"
         android:title="@string/contextDuplicate"
-        android:orderInCategory="3"
-        android:icon="@drawable/content_copy">
+        android:orderInCategory="3">
+    </item>
 
+    <item
+        android:id="@+id/contextShare"
+        android:title="@string/share"
+        android:orderInCategory="4">
     </item>
 </menu>

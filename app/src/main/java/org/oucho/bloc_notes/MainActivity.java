@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +36,7 @@ import org.oucho.bloc_notes.ConfirmationDialogFragment.ConfirmationDialogListene
 import org.oucho.bloc_notes.notes.Note;
 import org.oucho.bloc_notes.notes.NoteManager;
 import org.oucho.bloc_notes.update.AppUpdater;
-import org.oucho.bloc_notes.update.enums.Display;
+import org.oucho.bloc_notes.update.enums.Ecran;
 import org.oucho.bloc_notes.update.enums.Duration;
 import org.oucho.bloc_notes.update.enums.UpdateFrom;
 
@@ -65,13 +64,14 @@ public class MainActivity extends AppCompatActivity implements
     /* *********************************************************************************************
      * Création de l'activité
      * ********************************************************************************************/
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Context context = getApplicationContext();
+        context = getApplicationContext();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements
         assert actionBar != null;
 
         actionBar.setTitle(Html.fromHtml("<font color='" + couleurTitre + "'>" + titre + "</font>"));
-        //actionBar.setElevation(0);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -113,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -200,75 +200,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-    /* *********************************************************************************************
-     * Menu contextuel
-     * ********************************************************************************************/
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.list_item_context, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-                .getMenuInfo();
-        Note selectedNote = noteManager.getNoteById(info.id);
-
-        switch (item.getItemId()) {
-            case R.id.contextDelete:
-                ConfirmationDialogFragment dialog =
-                        ConfirmationDialogFragment.newInstance(this, getString(R.string.dialogDeleteSelected), DIALOG_DELETE);
-
-                Bundle b = new Bundle();
-                b.putInt("noteId", selectedNote.getID());
-                dialog.setArguments(b);
-                dialog.show(getSupportFragmentManager(), "contextDelete");
-                break;
-
-            case R.id.contextEdit:
-                openNote((int) info.id);
-                break;
-
-            case R.id.contextDuplicate:
-                noteManager.addNote(new Note(noteManager, selectedNote.getText()));
-                loadNotes();
-                break;
-        }
-
-        return super.onContextItemSelected(item);
-    }
-
-    private void collapseNote(Note note) {
-        View v = noteTiles.get(note);
-        v.findViewById(R.id.tile_options).setVisibility(View.GONE);
-        ((TextView) v.findViewById(R.id.noteTitle)).setMaxLines(getResources()
-                .getInteger(R.integer.max_tile_lines));
-        ((ImageView) v.findViewById(R.id.btn_tile_menu)).setImageResource(R.drawable.icon_dark_expand);
-    }
-
-    private void expandNoteTile(Note note) {
-        View tile = noteTiles.get(note);
-
-        tile.findViewById(R.id.tile_options).setVisibility(View.VISIBLE);
-        ((ImageView) tile.findViewById(R.id.btn_tile_menu)).setImageResource(R.drawable.icon_dark_collapse);
-        ((TextView) tile.findViewById(R.id.noteTitle)).setMaxLines(9);
-    }
-
-
     private void selectNote(Note note) {
         // Unknown note?
         if (!noteTiles.containsKey(note)) return;
 
         if (selectedNote != null) {
-            collapseNote(selectedNote);
+            //collapseNote(selectedNote);
             selectedNote = null;
         }
-        expandNoteTile(note);
+        //expandNoteTile(note);
         selectedNote = note;
     }
 
@@ -330,45 +270,77 @@ public class MainActivity extends AppCompatActivity implements
         tv.setText(note.getText());
         final Note n = note;
 
-        child.findViewById(R.id.btn_tile_expand).setOnClickListener(
-                new OnClickListener() {
-                    public void onClick(View v) {
-                        if (selectedNote == n) {
-                            collapseNote(n);
-                            selectedNote = null;
-                            return;
-                        } else if (selectedNote != null) {
-                            collapseNote(selectedNote);
-                        }
-                        selectedNote = n;
-                        expandNoteTile(n);
 
-                    }
-                });
         child.findViewById(R.id.tile_clickable).setOnClickListener(
                 new OnClickListener() {
                     public void onClick(View v) {
                         openNote(n);
                     }
                 });
+
         child.findViewById(R.id.tile_clickable).setOnLongClickListener(
                 new OnLongClickListener() {
 
                     public boolean onLongClick(View v) {
-                        if (selectedNote == n) return true;
-                        else if (selectedNote != null) {
-                            collapseNote(selectedNote);
-                        }
                         selectedNote = n;
-                        expandNoteTile(n);
+                        registerForContextMenu(v);
+                        openContextMenu(v);
+                        unregisterForContextMenu(v);
                         return true;
                     }
                 });
-        implementTileButtons(child.findViewById(R.id.tile_options), n);
+
 
         child.setAnimation(inAnimation);
         parent.addView(child);
     }
+
+
+
+    /* *********************************************************************************************
+     * Menu contextuel
+     * ********************************************************************************************/
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_item_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.contextDelete:
+                ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(this, getString(R.string.dialogDeleteSelected), DIALOG_DELETE);
+
+                Bundle b = new Bundle();
+                b.putInt("noteId", selectedNote.getID());
+                dialog.setArguments(b);
+                dialog.show(getSupportFragmentManager(), "contextDelete");
+                break;
+
+            case R.id.contextEdit:
+                openNote((int) info.id);
+                break;
+
+            case R.id.contextDuplicate:
+                noteManager.addNote(new Note(noteManager, selectedNote.getText()));
+                loadNotes();
+                break;
+
+            case R.id.contextShare:
+                selectedNote.share(this);
+                break;
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+
 
     private void populateNoteTiles() {
         TextView tvEmpty = (TextView) findViewById(R.id.emptyNotifier);
@@ -393,73 +365,6 @@ public class MainActivity extends AppCompatActivity implements
             addTile(note, parent, inflater, null);
         }
     }
-
-    private void implementTileButtons(View container, final Note note) {
-        final AppCompatActivity activity = this;
-
-        container.findViewById(R.id.btn_tile_copy).setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                note.copyToClipboard(application);
-                Toast.makeText(activity, R.string.toastNoteCopied, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        container.findViewById(R.id.btn_tile_delete).setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(activity,
-                        getString(R.string.dialogDeleteSelected), DIALOG_DELETE);
-                Bundle b = new Bundle();
-                b.putInt("noteId", note.getID());
-                dialog.setArguments(b);
-                dialog.show(getSupportFragmentManager(), "contextDelete");
-
-
-            }
-        });
-
-        container.findViewById(R.id.btn_tile_delete).setOnLongClickListener(new OnLongClickListener() {
-
-            public boolean onLongClick(View v) {
-                noteManager.deleteNote(note);
-                removeTile(note);
-                Toast.makeText(getApplicationContext(), getString(R.string.toastNoteDeleted), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-
-        container.findViewById(R.id.btn_tile_copy).setOnLongClickListener(new OnLongClickListener() {
-
-            public boolean onLongClick(View v) {
-                Note newNote = new Note(noteManager, note.getText());
-                noteManager.addNote(newNote);
-                Toast.makeText(activity, R.string.toastNoteDuplicated, Toast.LENGTH_SHORT).show();
-                addTile(newNote);
-                return true;
-            }
-        });
-
-        if (note.getHyperlinks().isEmpty()) {
-            container.findViewById(R.id.btn_tile_links).setVisibility(View.GONE);
-        } else {
-            container.findViewById(R.id.btn_tile_links).setOnClickListener(new OnClickListener() {
-
-                public void onClick(View v) {
-                    note.popupHyperlinks(activity);
-                }
-            });
-        }
-
-        container.findViewById(R.id.btn_tile_share).setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                note.share(activity);
-            }
-        });
-    }
-
-
 
 
     private void loadNotes() {
@@ -546,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML(updateURL)
                 .showEvery(5)
-                .setDisplay(Display.SNACKBAR)
+                .setDisplay(Ecran.SNACKBAR)
                 .setDuration(Duration.NORMAL)
                 .start();
     }
@@ -555,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements
         new AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML(updateURL)
-                .setDisplay(Display.DIALOG)
+                .setDisplay(Ecran.DIALOG)
                 .showAppUpdated(true)
                 .start();
     }

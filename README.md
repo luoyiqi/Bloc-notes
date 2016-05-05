@@ -5,6 +5,9 @@
 
   Bloc-notes for Android
 
+ <img alt="screenshot" src="/screenshots/1.jpg?raw=true" width="250px" />
+ <img alt="screenshot" src="/screenshots/2.jpg?raw=true" width="250px" />
+ <img alt="screenshot" src="/screenshots/3.jpg?raw=true" width="250px" />
 
 License
 -------

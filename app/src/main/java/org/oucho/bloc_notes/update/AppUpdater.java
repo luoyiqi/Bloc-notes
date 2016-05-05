@@ -8,7 +8,7 @@ import android.util.Log;
 
 import org.oucho.bloc_notes.R;
 import org.oucho.bloc_notes.update.enums.AppUpdaterError;
-import org.oucho.bloc_notes.update.enums.Display;
+import org.oucho.bloc_notes.update.enums.Ecran;
 import org.oucho.bloc_notes.update.enums.Duration;
 import org.oucho.bloc_notes.update.enums.UpdateFrom;
 import org.oucho.bloc_notes.update.objects.GitHub;
@@ -17,7 +17,7 @@ import org.oucho.bloc_notes.update.objects.Update;
 public class AppUpdater {
     private final Context context;
     private final LibraryPreferences libraryPreferences;
-    private Display display;
+    private Ecran display;
     private UpdateFrom updateFrom;
     private Duration duration;
     private GitHub gitHub;
@@ -35,7 +35,7 @@ public class AppUpdater {
     public AppUpdater(Context context) {
         this.context = context;
         this.libraryPreferences = new LibraryPreferences(context);
-        this.display = Display.DIALOG;
+        this.display = Ecran.DIALOG;
         this.updateFrom = UpdateFrom.GOOGLE_PLAY;
         this.duration = Duration.NORMAL;
         this.showEvery = 1;
@@ -55,9 +55,9 @@ public class AppUpdater {
      *
      * @param display how the update will be shown
      * @return this
-     * @see // com.github.javiersantos.appupdater.enums.Display
+     * @see // com.github.javiersantos.appupdater.enums.Ecran
      */
-    public AppUpdater setDisplay(Display display) {
+    public AppUpdater setDisplay(Ecran display) {
         this.display = display;
         return this;
     }
@@ -232,13 +232,13 @@ public class AppUpdater {
                     if (UtilsLibrary.isAbleToShow(successfulChecks, showEvery)) {
                         switch (display) {
                             case DIALOG:
-                                UtilsDisplay.showUpdateAvailableDialog(context, titleUpdate, getDescriptionUpdate(context, update, Display.DIALOG), btnDismiss, btnUpdate, btnDisable, updateFrom, update.getUrlToDownload());
+                                UtilsDisplay.showUpdateAvailableDialog(context, titleUpdate, getDescriptionUpdate(context, update, Ecran.DIALOG), btnDismiss, btnUpdate, btnDisable, updateFrom, update.getUrlToDownload());
                                 break;
                             case SNACKBAR:
-                                UtilsDisplay.showUpdateAvailableSnackbar(context, getDescriptionUpdate(context, update, Display.SNACKBAR), UtilsLibrary.getDurationEnumToBoolean(duration), updateFrom, update.getUrlToDownload());
+                                UtilsDisplay.showUpdateAvailableSnackbar(context, getDescriptionUpdate(context, update, Ecran.SNACKBAR), UtilsLibrary.getDurationEnumToBoolean(duration), updateFrom, update.getUrlToDownload());
                                 break;
                             case NOTIFICATION:
-                                UtilsDisplay.showUpdateAvailableNotification(context, context.getResources().getString(R.string.appupdater_update_available), getDescriptionUpdate(context, update, Display.NOTIFICATION), updateFrom, update.getUrlToDownload(), iconResId);
+                                UtilsDisplay.showUpdateAvailableNotification(context, context.getResources().getString(R.string.appupdater_update_available), getDescriptionUpdate(context, update, Ecran.NOTIFICATION), updateFrom, update.getUrlToDownload(), iconResId);
                                 break;
                         }
                     }
@@ -279,7 +279,7 @@ public class AppUpdater {
         void onFailed(AppUpdaterError error);
     }
 
-    private String getDescriptionUpdate(Context context, Update update, Display display) {
+    private String getDescriptionUpdate(Context context, Update update, Ecran display) {
         if (descriptionUpdate == null) {
             switch (display) {
                 case DIALOG:
