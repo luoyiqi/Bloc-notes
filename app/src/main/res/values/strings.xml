@@ -31,10 +31,6 @@
     <string name="toastNoteDeleted">Note supprimée</string>
     <string name="toastNoteSaved">Note sauvegardée!</string>
 
-    <string name="toastNoteCopied">Note copied to clipboard</string>
-    <string name="toastNoteDuplicated">Note duplicated</string>
-
-
     <string name="exit">Quitter</string>
 
 

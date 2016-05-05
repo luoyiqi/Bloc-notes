@@ -61,17 +61,17 @@ public class MainActivity extends AppCompatActivity implements
     private final String updateURL = "http://oucho.free.fr/app_android/Bloc-notes/update_blocnotes.xml";
 
 
+
     /* *********************************************************************************************
      * Création de l'activité
      * ********************************************************************************************/
-    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = getApplicationContext();
+        Context context = getApplicationContext();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

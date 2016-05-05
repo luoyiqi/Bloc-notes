@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -55,11 +57,16 @@ public class NoteEditActivity extends AppCompatActivity
         int id = getIntent().getExtras().getInt("noteId");
         currentNote = noteManager.getNoteById(id);
 
-        textEdit = (EditText) findViewById(R.id.editText1);
-
-
         String s = currentNote.getText();
+
+        textEdit = (EditText) findViewById(R.id.editText1);
+        textEdit.setLinksClickable(true);
+        textEdit.setAutoLinkMask(Linkify.WEB_URLS);
+        textEdit.setMovementMethod(LinkMovementMethod.getInstance());
+        //If the edit text contains previous text with potential links
         textEdit.setText(s);
+        Linkify.addLinks(textEdit, Linkify.WEB_URLS);
+
         moveTextCaret();
 
     }

@@ -31,11 +31,5 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="btn_tile_option">
-        <item name="android:background">@drawable/click_selector</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
-    </style>
+
 </resources>

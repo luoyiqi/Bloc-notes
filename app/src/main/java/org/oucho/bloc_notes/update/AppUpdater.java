@@ -232,7 +232,7 @@ public class AppUpdater {
                     if (UtilsLibrary.isAbleToShow(successfulChecks, showEvery)) {
                         switch (display) {
                             case DIALOG:
-                                UtilsDisplay.showUpdateAvailableDialog(context, titleUpdate, getDescriptionUpdate(context, update, Ecran.DIALOG), btnDismiss, btnUpdate, btnDisable, updateFrom, update.getUrlToDownload());
+                                UtilsDisplay.showUpdateAvailableDialog(context, titleUpdate, getDescriptionUpdate(context, update, Ecran.DIALOG), btnDismiss, btnUpdate, updateFrom, update.getUrlToDownload());
                                 break;
                             case SNACKBAR:
                                 UtilsDisplay.showUpdateAvailableSnackbar(context, getDescriptionUpdate(context, update, Ecran.SNACKBAR), UtilsLibrary.getDurationEnumToBoolean(duration), updateFrom, update.getUrlToDownload());
