@@ -26,15 +26,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.oucho.bloc_notes.ConfirmationDialog.ConfirmationDialogListener;
-import org.oucho.bloc_notes.update.AppUpdater;
-import org.oucho.bloc_notes.update.enums.Ecran;
-import org.oucho.bloc_notes.update.enums.Duration;
-import org.oucho.bloc_notes.update.enums.UpdateFrom;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +49,7 @@ public class MainActivity extends AppCompatActivity implements
     private Note selectedNote = null;
     private DrawerLayout mDrawerLayout;
 
-    private final String updateURL = "http://oucho.free.fr/app_android/Bloc-notes/update_blocnotes.xml";
-
+    private Context context;
 
 
     /* *********************************************************************************************
@@ -67,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Context context = getApplicationContext();
+        context = getApplicationContext();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -119,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        updateOnStart();
+        CheckUpdate.onStart(this);
     }
 
 
@@ -134,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (menuItem.getItemId()) {
 
             case R.id.nav_update:
-                checkUpdate();
+                CheckUpdate.withInfo(this);
                 break;
 
             case R.id.nav_help:
@@ -439,30 +433,5 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
-
-
-   /* **********************************************************************************************
-    * Mise à jour
-    * *********************************************************************************************/
-
-    private void updateOnStart(){
-
-        new AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML(updateURL)
-                .showEvery(5)
-                .setDisplay(Ecran.SNACKBAR)
-                .setDuration(Duration.NORMAL)
-                .start();
-    }
-
-    private void checkUpdate() {
-        new AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML(updateURL)
-                .setDisplay(Ecran.DIALOG)
-                .showAppUpdated(true)
-                .start();
-    }
 
 }
