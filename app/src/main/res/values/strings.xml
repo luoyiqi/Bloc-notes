@@ -4,8 +4,8 @@
     <string name="app_edit">Édition</string>
 
     <!-- nav header activity main -->
-    <string name="version">Bloc-notes 1.0</string>
-    <string name="by">Old Geek, avril 2016</string>
+    <string name="version">Bloc-notes 1.2</string>
+    <string name="by">Old Geek, mai 2016</string>
 
     <string name="titleEditNote">Editer note</string>
     <string name="saveNote">Sauvegarder</string>
