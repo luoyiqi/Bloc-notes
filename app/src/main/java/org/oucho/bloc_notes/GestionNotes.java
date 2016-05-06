@@ -1,8 +1,6 @@
-package org.oucho.bloc_notes.notes;
+package org.oucho.bloc_notes;
 
 import android.content.Context;
-
-import org.oucho.bloc_notes.NotepadApplication;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,11 +8,11 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class NoteManager {
+public class GestionNotes {
 	final ArrayList<Note> notes = new ArrayList<>();
 	private Context context = null;
 
-	public NoteManager(Context context) {
+	public GestionNotes(Context context) {
 		this.context = context;
 	}
 
@@ -23,17 +21,17 @@ public class NoteManager {
 		return notes.isEmpty();
 	}
 
-	private boolean getNoteByText(String t) {
+/*	private boolean getNoteByText(String t) {
 		for (Note n : notes)
 			if (n.findChanges(t)) {
 				return true;
 			}
 		return false;
-	}
+	}*/
 
-	public boolean getNoteByText(CharSequence text) {
+/*	public boolean getNoteByText(CharSequence text) {
 		return getNoteByText(text.toString());
-	}
+	}*/
 
 	public List<Note> getAllNotes() {
 		return notes;
@@ -41,10 +39,6 @@ public class NoteManager {
 
 	public Note getNoteById(int id) {
 		return notes.get(id);
-	}
-
-	public Note getNoteById(long id) {
-		return getNoteById((int) id);
 	}
 
 
@@ -60,7 +54,7 @@ public class NoteManager {
 
 	public void addNote(Note note) {
 		if (note == null || notes.contains(note)) return;
-		note.noteManager = this;
+		note.gestionNotes = this;
 		notes.add(note);
 		try {
 			note.saveToFile(context);
@@ -79,7 +73,7 @@ public class NoteManager {
 		return generateFilename(0);
 	}
 
-	public Note newFromClipboard(NotepadApplication application) {
+	public Note newFromClipboard(BlocNotesApplication application) {
 		Note note = Note.newFromClipboard(this, application);
 		if (note == null) return null;
 		addNote(note);

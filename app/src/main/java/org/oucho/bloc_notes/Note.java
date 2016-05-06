@@ -1,48 +1,39 @@
-package org.oucho.bloc_notes.notes;
+package org.oucho.bloc_notes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-
-import org.oucho.bloc_notes.NotepadApplication;
-import org.oucho.bloc_notes.R;
-import org.oucho.bloc_notes.LinkListDialog;
-import org.oucho.bloc_notes.LinkListDialog.LinkListener;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+
 
 
 public class Note {
     private static final int BUFFER_SIZE = 512;
-    private final List<String> hyperlinks = new ArrayList<>();
-    NoteManager noteManager = null;
+    GestionNotes gestionNotes = null;
     private String text;
     private String fileName = "";
 
-    public Note(NoteManager noteManager) {
-        this.noteManager = noteManager;
+    public Note(GestionNotes gestionNotes) {
+        this.gestionNotes = gestionNotes;
         this.text = "";
     }
 
-    public Note(NoteManager noteManager, String content) {
-        this(noteManager);
+    public Note(GestionNotes gestionNotes, String content) {
+        this(gestionNotes);
         if (content == null)
             setText("");
         else
             setText(content);
     }
 
-    private Note(NoteManager noteManager, CharSequence content) {
-        this(noteManager, content.toString());
+    private Note(GestionNotes gestionNotes, CharSequence content) {
+        this(gestionNotes, content.toString());
     }
 
-    public static Note newFromFile(NoteManager noteManager, Context context, String filename)
+    public static Note newFromFile(GestionNotes gestionNotes, Context context, String filename)
             throws IOException {
 
         FileInputStream inputFileStream = context.openFileInput(filename);
@@ -57,7 +48,7 @@ public class Note {
             buffer = new byte[Note.BUFFER_SIZE];
         }
 
-        Note n = new Note(noteManager, stringBuilder.toString().trim());
+        Note n = new Note(gestionNotes, stringBuilder.toString().trim());
         n.fileName = filename;
 
         inputFileStream.close();
@@ -65,11 +56,11 @@ public class Note {
         return n;
     }
 
-    public static Note newFromClipboard(NoteManager noteManager, NotepadApplication application) {
+    public static Note newFromClipboard(GestionNotes gestionNotes, BlocNotesApplication application) {
 
         CharSequence string = application.getClipboardString();
         if (string == null) return null;
-        return new Note(noteManager, string);
+        return new Note(gestionNotes, string);
     }
 
     public String getText() {
@@ -78,26 +69,8 @@ public class Note {
 
     public void setText(String t) {
         this.text = t;
-        findHyperlinks();
     }
 
-    private void findHyperlinks() {
-        hyperlinks.clear();
-        String[] words = this.text.toLowerCase(Locale.getDefault()).split("[\\s]");
-        for (String word : words) {
-            if (word.startsWith("http://") || word.startsWith("https://") || word.startsWith("www.")) {
-                if (word.startsWith("www.")) word = "http://" + word;
-                hyperlinks.add(word.trim());
-            }
-        }
-    }
-
-    /**
-     * Gets the list of hyperlinks found in the text
-     */
-    public List<String> getHyperlinks() {
-        return hyperlinks;
-    }
 
     private String getStart() {
         String s = text.trim();
@@ -114,7 +87,7 @@ public class Note {
     }
 
     public int getID() {
-        return noteManager.notes.indexOf(this);
+        return gestionNotes.notes.indexOf(this);
     }
 
     void delete(Context context) {
@@ -123,20 +96,7 @@ public class Note {
         }
     }
 
-    public void popupHyperlinks(final AppCompatActivity activity) {
-        if (hyperlinks.isEmpty()) return;
-
-        LinkListDialog dialog = new LinkListDialog();
-        dialog.setHyperlinks(this.hyperlinks);
-        dialog.setLinkListener(new LinkListener() {
-            public void onLinkClicked(String url) {
-                ((NotepadApplication) activity.getApplication()).openLink(url);
-            }
-        });
-        dialog.show(activity.getSupportFragmentManager(), "Link selector");
-    }
-
-    public void copyToClipboard(NotepadApplication application) {
+    public void copyToClipboard(BlocNotesApplication application) {
         application.setClipboardString(text);
     }
 
@@ -156,7 +116,7 @@ public class Note {
     public void saveToFile(Context context) throws IOException {
 
         if (TextUtils.isEmpty(fileName)) {
-            fileName = noteManager.generateFilename();
+            fileName = gestionNotes.generateFilename();
         }
 
         FileOutputStream file = context.openFileOutput(fileName, Context.MODE_PRIVATE);

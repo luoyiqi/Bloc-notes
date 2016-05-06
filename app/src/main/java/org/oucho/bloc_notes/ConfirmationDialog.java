@@ -9,22 +9,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-public class ConfirmationDialogFragment extends DialogFragment {
+public class ConfirmationDialog extends DialogFragment {
     private static ConfirmationDialogListener listener;
     private final Bundle bundle;
 
-    public ConfirmationDialogFragment() {
+    public ConfirmationDialog() {
         this.bundle = new Bundle();
     }
 
-    public static ConfirmationDialogFragment newInstance(Activity activity, String question, int id) {
+    public static ConfirmationDialog newInstance(Activity activity, String question, int id) {
 
         try {
             listener = (ConfirmationDialogListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement ConfirmationDialogListener");
         }
-        ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
+        ConfirmationDialog dialog = new ConfirmationDialog();
         Bundle bundle = new Bundle();
         bundle.putInt("dialogId", id);
         bundle.putString("text", question);

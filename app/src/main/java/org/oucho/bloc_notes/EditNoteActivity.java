@@ -15,18 +15,16 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.oucho.bloc_notes.ConfirmationDialogFragment.ConfirmationDialogListener;
-import org.oucho.bloc_notes.notes.Note;
-import org.oucho.bloc_notes.notes.NoteManager;
+import org.oucho.bloc_notes.ConfirmationDialog.ConfirmationDialogListener;
 
-public class NoteEditActivity extends AppCompatActivity
+public class EditNoteActivity extends AppCompatActivity
         implements ConfirmationDialogListener {
 
     /*Dialog IDs*/
     private final int DIALOG_DELETE = 1;
     private final int DIALOG_RESTORE = 2;
     private Note currentNote;
-    private NoteManager noteManager;
+    private GestionNotes gestionNotes;
     private EditText textEdit;
 
     @Override
@@ -51,15 +49,16 @@ public class NoteEditActivity extends AppCompatActivity
         actionBar.setBackgroundDrawable(colorDrawable);
         actionBar.setElevation(0);
 
-        NotepadApplication application = (NotepadApplication) this.getApplication();
-        noteManager = application.getNoteManager();
+        BlocNotesApplication application = (BlocNotesApplication) this.getApplication();
+        gestionNotes = application.getGestionNotes();
 
         int id = getIntent().getExtras().getInt("noteId");
-        currentNote = noteManager.getNoteById(id);
+        currentNote = gestionNotes.getNoteById(id);
 
         String s = currentNote.getText();
 
         textEdit = (EditText) findViewById(R.id.editText1);
+        assert textEdit != null;
         textEdit.setLinksClickable(true);
         textEdit.setAutoLinkMask(Linkify.WEB_URLS);
         textEdit.setMovementMethod(LinkMovementMethod.getInstance());
@@ -109,11 +108,11 @@ public class NoteEditActivity extends AppCompatActivity
                 currentNote.share(this);
                 break;*/
             case R.id.deleteItem:
-                ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(this, getString(R.string.dialogDeleteNote), DIALOG_DELETE);
+                ConfirmationDialog dialog = ConfirmationDialog.newInstance(this, getString(R.string.dialogDeleteNote), DIALOG_DELETE);
                 dialog.show(getSupportFragmentManager(), "delete");
                 break;
             case R.id.revertChanges:
-                ConfirmationDialogFragment d = ConfirmationDialogFragment.newInstance(this, getString(R.string.dialogRevertChanges), DIALOG_RESTORE);
+                ConfirmationDialog d = ConfirmationDialog.newInstance(this, getString(R.string.dialogRevertChanges), DIALOG_RESTORE);
                 d.show(getSupportFragmentManager(), "restore");
                 break;
 
@@ -133,7 +132,7 @@ public class NoteEditActivity extends AppCompatActivity
     }
 
     private void deleteCurrentNote() {
-        noteManager.deleteNote(currentNote);
+        gestionNotes.deleteNote(currentNote);
         currentNote = null;
         Toast.makeText(getApplicationContext(), getString(R.string.toastNoteDeleted), Toast.LENGTH_SHORT).show();
     }

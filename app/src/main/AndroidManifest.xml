@@ -7,7 +7,7 @@
 
 
     <application
-        android:name="org.oucho.bloc_notes.NotepadApplication"
+        android:name=".BlocNotesApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
@@ -30,7 +30,7 @@
 
 
         <activity
-            android:name=".NoteEditActivity"
+            android:name=".EditNoteActivity"
             android:label="@string/titleEditNote"
             android:windowSoftInputMode="stateVisible"
             android:configChanges="keyboard|keyboardHidden|orientation"

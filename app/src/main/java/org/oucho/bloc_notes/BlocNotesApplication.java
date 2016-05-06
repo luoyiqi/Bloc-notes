@@ -4,41 +4,28 @@ import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 
-import org.oucho.bloc_notes.notes.NoteManager;
+public class BlocNotesApplication extends Application {
 
-public class NotepadApplication extends Application {
-
-    private NoteManager noteManager = null;
+    private GestionNotes gestionNotes = null;
 
 
-    public NotepadApplication() {
+    public BlocNotesApplication() {
     }
 
     @Override
     public void onCreate() {
 
-        this.noteManager = new NoteManager(getApplicationContext());
+        this.gestionNotes = new GestionNotes(getApplicationContext());
         super.onCreate();
 
     }
 
-    public NoteManager getNoteManager() {
+    public GestionNotes getGestionNotes() {
 
-        return noteManager;
+        return gestionNotes;
     }
-
-    public void openLink(String url) {
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
 
     public CharSequence getClipboardString() {
         ClipboardManager manager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);

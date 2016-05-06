@@ -1,6 +1,5 @@
 package org.oucho.bloc_notes;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -32,9 +30,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.oucho.bloc_notes.ConfirmationDialogFragment.ConfirmationDialogListener;
-import org.oucho.bloc_notes.notes.Note;
-import org.oucho.bloc_notes.notes.NoteManager;
+import org.oucho.bloc_notes.ConfirmationDialog.ConfirmationDialogListener;
 import org.oucho.bloc_notes.update.AppUpdater;
 import org.oucho.bloc_notes.update.enums.Ecran;
 import org.oucho.bloc_notes.update.enums.Duration;
@@ -53,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements
     private final HashMap<Note, View> noteTiles = new HashMap<>();
     private final int DIALOG_DELETE = 1;
     private final int NOTE_EDIT = 2;
-    private NoteManager noteManager = null;
-    private NotepadApplication application;
+    private GestionNotes gestionNotes = null;
+    private BlocNotesApplication application;
     private Note selectedNote = null;
     private DrawerLayout mDrawerLayout;
 
@@ -93,10 +89,10 @@ public class MainActivity extends AppCompatActivity implements
         mNavigationView.setNavigationItemSelectedListener(this);
 
 
-        application = (NotepadApplication) this.getApplication();
-        noteManager = application.getNoteManager();
+        application = (BlocNotesApplication) this.getApplication();
+        gestionNotes = application.getGestionNotes();
 
-        noteManager.loadNotes();
+        gestionNotes.loadNotes();
         loadNotes();
 
 		/* Handling incoming intent */
@@ -108,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements
             if (type.startsWith("text/")) {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 if (sharedText != null) {
-                    openNote(new Note(noteManager, sharedText));
+                    openNote(new Note(gestionNotes, sharedText));
                 }
             }
         }
@@ -119,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openNote(new Note(noteManager));
+                openNote(new Note(gestionNotes));
             }
         });
 
@@ -142,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.nav_help:
-                about();
+                showAboutDialog();
                 break;
 
             case R.id.nav_exit:
@@ -161,6 +157,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    /**************
+     * About dialog
+     **************/
+
+    private void showAboutDialog(){
+        AboutDialog dialog = new AboutDialog();
+        dialog.show(getSupportFragmentManager(), "about");
+    }
 
     /* *********************************************************************************************
      * Menu
@@ -175,12 +179,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-/*            case R.id.addNote:
-                openNote(new Note(noteManager));
-                break;*/
 
             case R.id.pasteNote:
-                Note note = noteManager.newFromClipboard(application);
+                Note note = gestionNotes.newFromClipboard(application);
                 if (note == null) {
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.toastClipboardEmpty), Toast.LENGTH_SHORT)
@@ -311,11 +312,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 
         switch (item.getItemId()) {
             case R.id.contextDelete:
-                ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(this, getString(R.string.dialogDeleteSelected), DIALOG_DELETE);
+                ConfirmationDialog dialog = ConfirmationDialog.newInstance(this, getString(R.string.dialogDeleteSelected), DIALOG_DELETE);
 
                 Bundle b = new Bundle();
                 b.putInt("noteId", selectedNote.getID());
@@ -323,17 +323,17 @@ public class MainActivity extends AppCompatActivity implements
                 dialog.show(getSupportFragmentManager(), "contextDelete");
                 break;
 
-            case R.id.contextEdit:
-                openNote((int) info.id);
-                break;
-
             case R.id.contextDuplicate:
-                noteManager.addNote(new Note(noteManager, selectedNote.getText()));
+                gestionNotes.addNote(new Note(gestionNotes, selectedNote.getText()));
                 loadNotes();
                 break;
 
             case R.id.contextShare:
                 selectedNote.share(this);
+                break;
+
+            case R.id.contextCopy:
+                selectedNote.copyToClipboard(application);
                 break;
         }
 
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements
         //noinspection ConstantConditions
         parent.removeAllViews();
         selectedNote = null;
-        if (noteManager.isEmpty()) {
+        if (gestionNotes.isEmpty()) {
             //noinspection ConstantConditions
             tvEmpty.setVisibility(View.VISIBLE);
             return;
@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements
         LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        List<Note> notes = noteManager.getAllNotes();
+        List<Note> notes = gestionNotes.getAllNotes();
 
         for (Note note : notes) {
             addTile(note, parent, inflater, null);
@@ -382,9 +382,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void openNote(int noteId) {
-        Intent intent = new Intent(this, NoteEditActivity.class);
+        Intent intent = new Intent(this, EditNoteActivity.class);
         intent.putExtra("noteId", noteId);
-        intent.putExtra("noteText", noteManager.getNoteById(noteId).getText());
+        intent.putExtra("noteText", gestionNotes.getNoteById(noteId).getText());
         startActivityForResult(intent, NOTE_EDIT);
     }
 
@@ -392,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements
      * Opens note in editor. Adds note to the note manager.
      */
     private void openNote(Note note) {
-        noteManager.addNote(note);
+        gestionNotes.addNote(note);
         openNote(note.getID());
     }
 
@@ -401,8 +401,8 @@ public class MainActivity extends AppCompatActivity implements
             case DIALOG_DELETE:
                 if (bundle.containsKey("noteId")) {
                     int noteId = bundle.getInt("noteId");
-                    removeTile(noteManager.getNoteById(noteId));
-                    noteManager.deleteNote(noteId);
+                    removeTile(gestionNotes.getNoteById(noteId));
+                    gestionNotes.deleteNote(noteId);
 
                     Toast.makeText(getApplicationContext(), getString(R.string.toastNoteDeleted), Toast.LENGTH_SHORT).show();
                 }
@@ -465,31 +465,4 @@ public class MainActivity extends AppCompatActivity implements
                 .start();
     }
 
-
-
-    /***********************************************************************************************
-     * About dialog
-     **********************************************************************************************/
-
-    private void about() {
-
-        String title = getString(R.string.about);
-        AlertDialog.Builder about = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = getLayoutInflater();
-
-        @SuppressLint("InflateParams")
-        View dialoglayout = inflater.inflate(R.layout.alertdialog_main_noshadow, null);
-        Toolbar toolbar = (Toolbar) dialoglayout.findViewById(R.id.dialog_toolbar_noshadow);
-        toolbar.setTitle(title);
-        toolbar.setTitleTextColor(0xffffffff);
-
-        final TextView text = (TextView) dialoglayout.findViewById(R.id.showrules_dialog);
-        text.setText(getString(R.string.about_message));
-
-        about.setView(dialoglayout);
-
-        AlertDialog dialog = about.create();
-        dialog.show();
-    }
 }
