@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements
     private Note selectedNote = null;
     private DrawerLayout mDrawerLayout;
 
-    private Context context;
-
 
     /* *********************************************************************************************
      * Création de l'activité
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = getApplicationContext();
+        Context context = getApplicationContext();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -208,8 +206,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void addTile(Note note) {
-        Animation tileAnimation =
-                new TranslateAnimation(1000, 0, 0, 0);
+        Animation tileAnimation = new TranslateAnimation(1000, 0, 0, 0);
         tileAnimation.setDuration(300);
         tileAnimation.setFillAfter(true);
 
@@ -223,8 +220,7 @@ public class MainActivity extends AppCompatActivity implements
         if (!noteTiles.containsKey(note)) return;
         if (selectedNote == note) selectedNote = null;
 
-        Animation tileAnimation =
-                new TranslateAnimation(0, 1000, 0, 0);
+        Animation tileAnimation = new TranslateAnimation(0, 1000, 0, 0);
         tileAnimation.setDuration(300);
         tileAnimation.setFillAfter(true);
 
@@ -329,6 +325,9 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.contextCopy:
                 selectedNote.copyToClipboard(application);
                 break;
+
+            default:
+                break;
         }
 
         return super.onContextItemSelected(item);
@@ -370,6 +369,9 @@ public class MainActivity extends AppCompatActivity implements
         switch (requestCode) {
             case NOTE_EDIT:
                 loadNotes();
+                break;
+
+            default:
                 break;
         }
         super.onActivityResult(requestCode, resultCode, intent);

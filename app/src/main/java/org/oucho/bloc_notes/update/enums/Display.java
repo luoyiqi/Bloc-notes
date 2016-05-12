@@ -1,7 +1,6 @@
 package org.oucho.bloc_notes.update.enums;
 
-public enum Ecran {
+public enum Display {
     DIALOG,
-    SNACKBAR,
-    NOTIFICATION
+    SNACKBAR
 }

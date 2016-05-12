@@ -171,6 +171,9 @@ public class EditNoteActivity extends AppCompatActivity
             case DIALOG_RESTORE:
                 refreshNote();
                 break;
+
+            default:
+                break;
         }
     }
 

@@ -22,11 +22,6 @@ class LibraryPreferences {
         return sharedPreferences.getBoolean(KeyAppUpdaterShow, true);
     }
 
-    public void setAppUpdaterShow(Boolean res) {
-        editor.putBoolean(KeyAppUpdaterShow, res);
-        editor.commit();
-    }
-
     public Integer getSuccessfulChecks() {
         return sharedPreferences.getInt(KeySuccessfulChecks, 0);
     }
