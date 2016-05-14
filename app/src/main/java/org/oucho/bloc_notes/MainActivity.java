@@ -390,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements
     private void openNote(Note note) {
         gestionNotes.addNote(note);
         openNote(note.getID());
+
     }
 
     public void onYesClicked(Bundle bundle) {
@@ -402,6 +403,10 @@ public class MainActivity extends AppCompatActivity implements
 
                     Toast.makeText(getApplicationContext(), getString(R.string.toastNoteDeleted), Toast.LENGTH_SHORT).show();
                 }
+                break;
+
+
+            default:
                 break;
         }
 
