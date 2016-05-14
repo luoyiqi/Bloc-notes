@@ -3,7 +3,7 @@ package org.oucho.bloc_notes.update;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-public class Version implements Comparable<Version> {
+class Version implements Comparable<Version> {
     private final String version;
 
     private String get() {
