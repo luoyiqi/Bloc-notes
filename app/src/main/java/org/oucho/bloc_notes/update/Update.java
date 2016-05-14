@@ -1,4 +1,4 @@
-package org.oucho.bloc_notes.update.objects;
+package org.oucho.bloc_notes.update;
 
 import java.net.URL;
 

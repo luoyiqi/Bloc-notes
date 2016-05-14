@@ -2,8 +2,8 @@ package org.oucho.bloc_notes;
 
 import android.app.Activity;
 
-import org.oucho.bloc_notes.update.AppUpdater;
-import org.oucho.bloc_notes.update.enums.Display;
+import org.oucho.bloc_notes.update.AppUpdate;
+import org.oucho.bloc_notes.update.Display;
 
 
 class CheckUpdate {
@@ -12,14 +12,14 @@ class CheckUpdate {
 
     public static void onStart(Activity activity){
 
-        new AppUpdater(activity)
+        new AppUpdate(activity)
                 .setUpdateXML(updateURL)
                 .setDisplay(Display.SNACKBAR)
                 .start();
     }
 
     public static void withInfo(Activity activity) {
-        new AppUpdater(activity)
+        new AppUpdate(activity)
                 .setUpdateXML(updateURL)
                 .setDisplay(Display.DIALOG)
                 .showAppUpdated()
