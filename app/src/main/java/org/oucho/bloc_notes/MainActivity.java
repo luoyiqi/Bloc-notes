@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -39,15 +40,20 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements
         ConfirmationDialogListener,
         OnGestureListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        OnNavigationItemSelectedListener {
+
+    private final static String versionName = BuildConfig.VERSION_NAME;
 
     private final HashMap<Note, View> noteTiles = new HashMap<>();
-    private final int DIALOG_DELETE = 1;
+
     private final int NOTE_EDIT = 2;
-    private GestionNotes gestionNotes = null;
-    private BlocNotesApplication application;
-    private Note selectedNote = null;
+    private final int DIALOG_DELETE = 1;
+
     private DrawerLayout mDrawerLayout;
+    private BlocNotesApplication application;
+
+    private Note selectedNote = null;
+    private GestionNotes gestionNotes = null;
 
 
     /* *********************************************************************************************
@@ -76,10 +82,13 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-
         assert mNavigationView != null;
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        // header navigation drawer
+        View headerView = mNavigationView.inflateHeaderView(R.layout.navigation_header);
+        TextView appVersion = (TextView) headerView.findViewById(R.id.version);
+        appVersion.setText(titre + " v" + versionName);
 
         application = (BlocNotesApplication) this.getApplication();
         gestionNotes = application.getGestionNotes();
@@ -137,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
                 exit();
                 break;
 
-            default: //do nothing
+            default:
                 break;
         }
         return true;
