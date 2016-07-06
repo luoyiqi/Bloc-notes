@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements
 
     Note note;
 
-    private final int BUFFER_SIZE = 512;
-
     /* *********************************************************************************************
      * Création de l'activité
      * ********************************************************************************************/
