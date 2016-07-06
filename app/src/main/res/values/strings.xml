@@ -9,7 +9,7 @@
     <string name="revertChanges">Annuler changement</string>
     <string name="listEmpty">La liste est vide</string>
     <string name="share">Partager</string>
-    <string name="newPaste">Coller depuis le presse-papiers</string>
+    <string name="newPaste">Coller depuis le presse-papier</string>
 
     <string name="contextCopy">Copier le contenu</string>
     <string name="contextDelete">Supprimer</string>
@@ -19,7 +19,7 @@
     <string name="dialogRevertChanges">Annuler tous les changements depuis la dernière sauvegarde?</string>
     <string name="dialogDeleteSelected">Supprimer la note sélectionné ?</string>
 
-    <string name="toastClipboardEmpty">Le presse-papiers est vide</string>
+    <string name="toastClipboardEmpty">Le presse-papier est vide</string>
 
 
     <string name="shareEntityName">Note</string>

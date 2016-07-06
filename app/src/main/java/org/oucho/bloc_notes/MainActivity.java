@@ -32,6 +32,9 @@ import android.widget.Toast;
 
 import org.oucho.bloc_notes.ConfirmationDialog.ConfirmationDialogListener;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements
     private Note selectedNote = null;
     private GestionNotes gestionNotes = null;
 
+    Note note;
+
+    private final int BUFFER_SIZE = 512;
 
     /* *********************************************************************************************
      * Création de l'activité
@@ -100,16 +106,31 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         String type = intent.getType(), action = intent.getAction();
 
-        if (type != null && Intent.ACTION_SEND.equals(action)) {
-            /* Intent received */
+        if (type != null && (Intent.ACTION_VIEW.equals(action) || Intent.ACTION_SEND.equals(action)) ) {
+
             if (type.startsWith("text/")) {
-                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                if (sharedText != null) {
-                    openNote(new Note(gestionNotes, sharedText));
+
+                try {
+                    // Tentative d'ouverture du flux de données
+                    InputStream attachment = getContentResolver().openInputStream(getIntent().getData());
+                    BufferedReader r = new BufferedReader(new InputStreamReader(attachment));
+                    // Lecture du contenu
+                    String line;
+                    StringBuffer result = new StringBuffer();
+                    while ((line = r.readLine()) != null) {
+                        result.append(line + "\n");
+                    }
+
+                    openNote(new Note(gestionNotes, result.toString()));
+
+                } catch (Exception e) {
+                    // Une erreur s'est produite lors de la lecture du flux
+                    Toast.makeText(this, "Une erreur s'est produite lors de la lecture du fichier.", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
-        }
 
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -121,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         CheckUpdate.onStart(this);
+
     }
 
 
@@ -182,14 +204,8 @@ public class MainActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
 
             case R.id.pasteNote:
-                Note note = gestionNotes.newFromClipboard(application);
-                if (note == null) {
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.toastClipboardEmpty), Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    addTile(note);
-                }
+                importerPressePapier();
+
                 break;
 
             case android.R.id.home:
@@ -201,6 +217,16 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    private void importerPressePapier() {
+        try {
+            note = gestionNotes.newFromClipboard(application);
+        } catch (NullPointerException e) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.toastClipboardEmpty), Toast.LENGTH_SHORT)
+                    .show();
+
+        }
+    }
 
     private void selectNote(Note note) {
         // Unknown note?
