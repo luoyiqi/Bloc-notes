@@ -224,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements
                     .show();
 
         }
+
+        loadNotes();
     }
 
     private void selectNote(Note note) {
